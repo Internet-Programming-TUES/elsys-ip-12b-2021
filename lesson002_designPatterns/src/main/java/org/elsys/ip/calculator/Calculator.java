@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Calculator {
     public static void main(String[] args) {
@@ -16,7 +17,7 @@ public class Calculator {
                     Arrays.stream(line.split(" ")).toList();
             String result = commandExecutor.execute(
                     lineSplit.get(0),
-                    lineSplit.stream().skip(1).toList());
+                    lineSplit.stream().skip(1).collect(Collectors.toList()));
             System.out.println(result);
         }
     }
