@@ -14,10 +14,12 @@ public class ChatClient {
     private PrintWriter out;
     private BufferedReader in;
 
-    public void startConnection(String ip, int port) throws IOException {
+    public void startConnection(String ip, int port, String name) throws IOException {
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+        out.println(name);
 
         new Thread(() -> {
             try {
@@ -47,10 +49,13 @@ public class ChatClient {
     }
 
     public static void main(String[] args) throws IOException {
-        ChatClient client = new ChatClient();
-        client.startConnection("localhost", 6666);
-
         Scanner scanner = new Scanner(System.in);
+        System.out.print("What is your name?: ");
+        String name = scanner.nextLine();
+
+        ChatClient client = new ChatClient();
+        client.startConnection("localhost", 6666, name);
+
         while (true) {
             String line = scanner.nextLine();
             client.sendMessage(line);
