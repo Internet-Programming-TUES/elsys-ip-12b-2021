@@ -6,27 +6,31 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ChatServer {
     private ServerSocket serverSocket;
+    private final List<CalculatorClientHandler> clients = new ArrayList<>();
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         while (true) {
-            new CalculatorClientHandler(serverSocket.accept()).start();
+            CalculatorClientHandler client = new CalculatorClientHandler(serverSocket.accept(), this);
+            clients.add(client);
+            client.start();
         }
     }
 
     private static class CalculatorClientHandler extends Thread {
-        private Socket clientSocket;
+        private final Socket clientSocket;
         private PrintWriter out;
         private BufferedReader in;
+        private final ChatServer server;
 
-        public CalculatorClientHandler(Socket socket) {
+        public CalculatorClientHandler(Socket socket, ChatServer server) {
             this.clientSocket = socket;
+            this.server = server;
         }
 
         public void run() {
@@ -39,7 +43,7 @@ public class ChatServer {
                     if (line == null) {
                         break;
                     }
-                    out.println(line);
+                    server.printlnAll(line);
                 }
             } catch (Throwable t) {
                 System.out.println(t.getMessage());
@@ -57,6 +61,10 @@ public class ChatServer {
                 System.out.println(t.getMessage());
             }
         }
+    }
+
+    private void printlnAll(String line) {
+        clients.forEach(c -> c.out.println(line));
     }
 
     public static void main(String[] args) throws IOException {
