@@ -13,7 +13,7 @@ public class QuestionBank {
         add(Question.builder().setQuestion("Kolko shte imam na IP?").addAnswer("2").addCorrectAnswer("3").addAnswer("4").addAnswer("5").build());
     }};
 
-    public void getNextQuestion() {
+    public void moveToNextQuestion() {
         if (questions.size() == 0) {
             return;
         }
