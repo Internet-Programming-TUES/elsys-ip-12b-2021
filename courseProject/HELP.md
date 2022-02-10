@@ -18,3 +18,4 @@ https://spring.io/guides/gs/accessing-data-jpa/
 https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
 https://stackoverflow.com/questions/2302802/how-to-fix-the-hibernate-object-references-an-unsaved-transient-instance-save
 https://www.baeldung.com/spring-boot-h2-database
+https://spring.io/guides/gs/testing-web/
