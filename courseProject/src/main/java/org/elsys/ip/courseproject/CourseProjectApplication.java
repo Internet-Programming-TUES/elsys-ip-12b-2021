@@ -22,7 +22,7 @@ public class CourseProjectApplication {
 
     @PostConstruct
     public void test() {
-        System.out.println(repo != null);
+        System.out.println("======================");
         System.out.println(repo.findAll().iterator().hasNext());
 
         Question question = new Question();
@@ -42,5 +42,7 @@ public class CourseProjectApplication {
 
         Question fromDB = repo.findAll().iterator().next();
         System.out.println(fromDB.toString());
+        System.out.println(repo.findAll().iterator().hasNext());
+        System.out.println("======================");
     }
 }
