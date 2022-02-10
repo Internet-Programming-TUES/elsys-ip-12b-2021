@@ -12,6 +12,7 @@
 
 Играта свършва когато някой играч събере Х точки.
 
+Достъпваме базата данни на http://localhost:8080/h2-console
 
 https://spring.io/guides/gs/accessing-data-jpa/
 https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/

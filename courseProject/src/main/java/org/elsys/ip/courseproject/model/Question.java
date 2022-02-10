@@ -20,6 +20,7 @@ public class Question {
     private String text;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="question")
     private List<Answer> answers;
 
     public UUID getId() {
