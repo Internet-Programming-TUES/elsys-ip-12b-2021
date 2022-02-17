@@ -19,3 +19,6 @@ https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/
 https://stackoverflow.com/questions/2302802/how-to-fix-the-hibernate-object-references-an-unsaved-transient-instance-save
 https://www.baeldung.com/spring-boot-h2-database
 https://spring.io/guides/gs/testing-web/
+https://www.baeldung.com/registration-with-spring-mvc-and-spring-security
+https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-spring-security/
+
