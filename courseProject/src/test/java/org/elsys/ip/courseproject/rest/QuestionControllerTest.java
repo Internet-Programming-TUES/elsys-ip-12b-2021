@@ -1,8 +1,11 @@
 package org.elsys.ip.courseproject.rest;
 
+import org.elsys.ip.courseproject.error.UserAlreadyExistException;
 import org.elsys.ip.courseproject.model.Answer;
 import org.elsys.ip.courseproject.model.Question;
 import org.elsys.ip.courseproject.model.QuestionRepository;
+import org.elsys.ip.courseproject.service.UserService;
+import org.elsys.ip.courseproject.web.UserDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,11 +37,16 @@ public class QuestionControllerTest {
     @Autowired
     private QuestionRepository repo;
 
+    @Autowired
+    private UserService userService;
+
     private String questionId;
 
     @Test
     public void getQuestion() throws Exception {
-        Question question = this.restTemplate.getForObject("http://localhost:" + port + "/question?id=" + questionId,
+        Question question = this.restTemplate.
+                withBasicAuth("admin@admin.com", "password").
+                getForObject("http://localhost:" + port + "/api/question?id=" + questionId,
                 Question.class);
 
         assertThat(question.getText()).contains("Kolko e 2+2?");
@@ -46,14 +54,23 @@ public class QuestionControllerTest {
 
     @Test
     public void getNotExistingQuestion() throws Exception {
-        ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/question?id=2e31a8ec-7466-4259-9690-3509981e62a0",
+        ResponseEntity<String> response = this.restTemplate.
+                withBasicAuth("admin@admin.com", "password").
+                getForEntity("http://localhost:" + port + "/api/question?id=2e31a8ec-7466-4259-9690-3509981e62a0",
                 String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws UserAlreadyExistException {
+        UserDto userDto = new UserDto();
+        userDto.setFirstName("Admin");
+        userDto.setLastName("Admin");
+        userDto.setEmail("admin@admin.com");
+        userDto.setPassword("password");
+        userService.registerNewUserAccount(userDto);
+
         assertThat(repo.count()).isEqualTo(0);
 
         Question question = new Question();
