@@ -38,7 +38,7 @@ public class QuestionControllerTest {
 
     @Test
     public void getQuestion() throws Exception {
-        Question question = this.restTemplate.getForObject("http://localhost:" + port + "?id=" + questionId,
+        Question question = this.restTemplate.getForObject("http://localhost:" + port + "/question?id=" + questionId,
                 Question.class);
 
         assertThat(question.getText()).contains("Kolko e 2+2?");
@@ -46,7 +46,7 @@ public class QuestionControllerTest {
 
     @Test
     public void getNotExistingQuestion() throws Exception {
-        ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "?id=2e31a8ec-7466-4259-9690-3509981e62a0",
+        ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/question?id=2e31a8ec-7466-4259-9690-3509981e62a0",
                 String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

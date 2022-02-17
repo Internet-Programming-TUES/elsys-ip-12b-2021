@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 import java.util.UUID;
 
-@RestController
+@RestController("/question")
 public class QuestionController {
     private final QuestionRepository repository;
 
