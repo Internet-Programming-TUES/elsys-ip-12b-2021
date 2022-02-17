@@ -13,8 +13,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/question").authenticated()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/**").authenticated()
                 .and()
                 .formLogin();
 
