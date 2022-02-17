@@ -53,6 +53,16 @@ public class QuestionControllerTest {
     }
 
     @Test
+    public void noAuth() throws Exception {
+        ResponseEntity<String> response = this.restTemplate.
+                // NO AUTH HEADER
+                getForEntity("http://localhost:" + port + "/api/question?id=2e31a8ec-7466-4259-9690-3509981e62a0",
+                        String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
     public void getNotExistingQuestion() throws Exception {
         ResponseEntity<String> response = this.restTemplate.
                 withBasicAuth("admin@admin.com", "password").
