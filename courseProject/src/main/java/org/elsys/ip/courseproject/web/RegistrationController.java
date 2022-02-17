@@ -1,5 +1,9 @@
 package org.elsys.ip.courseproject.web;
 
+import org.elsys.ip.courseproject.error.UserAlreadyExistException;
+import org.elsys.ip.courseproject.model.User;
+import org.elsys.ip.courseproject.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +21,9 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/user/registration")
 public class RegistrationController {
+    @Autowired
+    private UserService userService;
+
     @GetMapping
     public String showRegistrationForm(WebRequest request, Model model) {
         UserDto userDto = new UserDto();
@@ -26,6 +33,17 @@ public class RegistrationController {
 
     @PostMapping
     public String registerUserAccount(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult) {
-        return "registration";
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+
+        try {
+            User registered = userService.registerNewUserAccount(userDto);
+        } catch (UserAlreadyExistException uaeEx) {
+            bindingResult.rejectValue("email", "user", "An account already exists for this email.");
+            return "registration";
+        }
+
+        return "redirect:/login";
     }
 }
