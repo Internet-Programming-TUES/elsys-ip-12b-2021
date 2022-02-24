@@ -1,4 +1,4 @@
-package org.elsys.ip.courseproject.web;
+package org.elsys.ip.courseproject.web.dto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

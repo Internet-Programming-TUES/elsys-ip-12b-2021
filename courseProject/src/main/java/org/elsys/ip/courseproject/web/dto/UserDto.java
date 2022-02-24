@@ -1,4 +1,4 @@
-package org.elsys.ip.courseproject.web;
+package org.elsys.ip.courseproject.web.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

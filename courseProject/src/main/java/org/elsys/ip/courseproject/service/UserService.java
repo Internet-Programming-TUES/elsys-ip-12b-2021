@@ -3,7 +3,7 @@ package org.elsys.ip.courseproject.service;
 import org.elsys.ip.courseproject.error.UserAlreadyExistException;
 import org.elsys.ip.courseproject.model.User;
 import org.elsys.ip.courseproject.model.UserRepository;
-import org.elsys.ip.courseproject.web.UserDto;
+import org.elsys.ip.courseproject.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

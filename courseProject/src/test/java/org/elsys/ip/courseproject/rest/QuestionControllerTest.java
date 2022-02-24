@@ -5,8 +5,7 @@ import org.elsys.ip.courseproject.model.Answer;
 import org.elsys.ip.courseproject.model.Question;
 import org.elsys.ip.courseproject.model.QuestionRepository;
 import org.elsys.ip.courseproject.service.UserService;
-import org.elsys.ip.courseproject.web.UserDto;
-import org.junit.jupiter.api.BeforeAll;
+import org.elsys.ip.courseproject.web.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

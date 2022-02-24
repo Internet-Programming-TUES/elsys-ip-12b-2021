@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1 th:text="#{label.rooms.title}">form</h1>
+<form action="/room" th:object="${newRoom}" method="POST" enctype="utf8">
+    <div>
+        <label th:text="#{label.room.name}">first</label>
+        <input th:field="*{name}"/>
+        <p th:each="error: ${#fields.errors('name')}"
+           th:text="${error}" style="color:red;">Validation error</p>
+    </div>
+
+    <p th:each="error : ${#fields.errors('global')}"
+       th:text="${error}" style="color:red;">Validation error</p>
+    <button type="submit">create room</button>
+</form>
+
+<a th:each="room: ${rooms}" th:text="${room.name}" th:href="'/room?id=' + ${room.id}"></a>
+
+</body>
+</html>
