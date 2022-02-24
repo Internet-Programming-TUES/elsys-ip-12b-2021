@@ -42,6 +42,7 @@ public class RoomService {
         roomRepository.save(room);
 
         roomDto.setId(room.getId().toString());
+
         return roomDto;
     }
 
