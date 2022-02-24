@@ -14,7 +14,7 @@
     <button type="submit">create room</button>
 </form>
 
-<a th:each="room: ${rooms}" th:text="${room.name}" th:href="'/room?id=' + ${room.id}"></a>
+<th:block th:each="room: ${rooms}"><a th:text="${room.name}" th:href="'/room?id=' + ${room.id}"></a></br></th:block>
 
 </body>
 </html>
