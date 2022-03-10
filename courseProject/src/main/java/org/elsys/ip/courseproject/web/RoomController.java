@@ -62,4 +62,20 @@ public class RoomController {
         return "room";
     }
 
+    @PostMapping("/room")
+    public String joinRoom(Model model, @RequestParam("id") String roomId, @RequestParam("join") boolean join) {
+        try {
+            if (join) {
+                roomService.addMyselfAsParticipant(roomId);
+            } else {
+                roomService.removeMyselfAsParticipant(roomId);
+            }
+        } catch (RoomNotExistException e) {
+            model.addAttribute("message", "Room with id " + roomId + " doesn't exist.");
+            return "error";
+        }
+
+        return "redirect:/room?id=" + roomId;
+    }
+
 }

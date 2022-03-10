@@ -40,6 +40,16 @@ public class RoomDto {
         this.participants = participants;
     }
 
+    private boolean isCurrentUserParticipant;
+
+    public boolean isCurrentUserParticipant() {
+        return isCurrentUserParticipant;
+    }
+
+    public void setCurrentUserParticipant(boolean currentUserParticipant) {
+        isCurrentUserParticipant = currentUserParticipant;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

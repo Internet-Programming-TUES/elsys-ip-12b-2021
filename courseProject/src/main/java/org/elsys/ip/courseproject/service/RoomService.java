@@ -34,10 +34,7 @@ public class RoomService {
             throw new RoomAlreadyExistException("Room with name " + name + " already exists.");
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-
-        User admin = userRepository.findByEmail(currentUserEmail);
+        User admin = myself();
 
         Room room = new Room();
         room.setName(name);
@@ -50,6 +47,53 @@ public class RoomService {
     }
 
     public RoomDto getRoom(String roomId) throws RoomNotExistException {
+        return convert(getRoomEntityById(roomId));
+    }
+
+    public List<RoomDto> getAllRooms() {
+        return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
+                .map(this::convert).collect(Collectors.toList());
+    }
+
+    public RoomDto addMyselfAsParticipant(String roomId) throws RoomNotExistException {
+        Room room = getRoomEntityById(roomId);
+        room.getParticipants().add(myself());
+        roomRepository.save(room);
+        return convert(room);
+    }
+
+    public RoomDto removeMyselfAsParticipant(String roomId) throws RoomNotExistException {
+        Room room = getRoomEntityById(roomId);
+        room.getParticipants().remove(myself());
+        roomRepository.save(room);
+        return convert(room);
+    }
+
+    private RoomDto convert(Room room) {
+        RoomDto dto = new RoomDto();
+        dto.setId(room.getId().toString());
+        dto.setName(room.getName());
+        dto.setParticipants(room.getParticipants().stream().map(x -> convert(x)).collect(Collectors.toList()));
+        dto.setCurrentUserParticipant(room.getParticipants().contains(myself()));
+        return dto;
+    }
+
+    private UserDto convert(User user) {
+        UserDto dto = new UserDto();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        return dto;
+    }
+
+    private User myself() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        return userRepository.findByEmail(currentUserEmail);
+    }
+
+    private Room getRoomEntityById(String roomId) throws RoomNotExistException {
         Optional<Room> room = Optional.empty();
         try {
             room = roomRepository.findById(UUID.fromString(roomId));
@@ -60,27 +104,6 @@ public class RoomService {
             throw new RoomNotExistException("Room with id " + roomId + " doesn't exist.");
         }
 
-        return convert(room.get());
-    }
-
-    public List<RoomDto> getAllRooms() {
-        return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
-                .map(this::convert).collect(Collectors.toList());
-    }
-
-    private RoomDto convert(Room room) {
-        RoomDto dto = new RoomDto();
-        dto.setId(room.getId().toString());
-        dto.setName(room.getName());
-        dto.setParticipants(room.getParticipants().stream().map(x -> convert(x)).collect(Collectors.toList()));
-        return dto;
-    }
-
-    private UserDto convert(User user) {
-        UserDto dto = new UserDto();
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setEmail(user.getEmail());
-        return dto;
+        return room.get();
     }
 }
