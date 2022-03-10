@@ -1,5 +1,7 @@
 <html>
 <body>
+<div th:replace="fragments/menu :: menu"></div>
+
 <h1 th:text="#{label.room.title}">form</h1>
 <p th:text="${room.name}" />
 <p th:text="${room.id}" />

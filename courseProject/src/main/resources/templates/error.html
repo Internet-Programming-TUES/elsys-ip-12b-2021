@@ -1,5 +1,7 @@
 <html>
 <body>
+<div th:replace="fragments/menu :: menu"></div>
+
 <h1 th:text="#{label.error.title}">form</h1>
 <p th:if="${message}" style="color:red;" th:text="${message}" />
 
