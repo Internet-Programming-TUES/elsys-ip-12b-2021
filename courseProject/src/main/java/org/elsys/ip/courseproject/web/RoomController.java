@@ -1,5 +1,6 @@
 package org.elsys.ip.courseproject.web;
 
+import org.elsys.ip.courseproject.error.RoomAlreadyExistException;
 import org.elsys.ip.courseproject.error.RoomNotExistException;
 import org.elsys.ip.courseproject.error.UserAlreadyExistException;
 import org.elsys.ip.courseproject.model.User;
@@ -24,18 +25,27 @@ public class RoomController {
 
     @GetMapping("/rooms")
     public String allRooms(WebRequest request, Model model) {
-        model.addAttribute("newRoom", new RoomDto());
+        model.addAttribute("room", new RoomDto());
         model.addAttribute("rooms", roomService.getAllRooms());
 
         return "rooms";
     }
 
-    @PostMapping("/room")
-    public String createRoom(@ModelAttribute("room") @Valid RoomDto roomDto, BindingResult bindingResult) {
-        // TODO: Validation
-        roomService.createRoom(roomDto);
+    @PostMapping("/rooms")
+    public String createRoom(Model model, @ModelAttribute("room") @Valid RoomDto roomDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("rooms", roomService.getAllRooms());
+            return "rooms";
+        }
 
-        return "room";
+        try {
+            RoomDto room = roomService.createRoom(roomDto);
+            return "redirect:/room?id=" + room.getId();
+        } catch (RoomAlreadyExistException uaeEx) {
+            bindingResult.rejectValue("name", "room", "Room with name " + roomDto.getName() + " already exists.");
+            model.addAttribute("rooms", roomService.getAllRooms());
+            return "rooms";
+        }
     }
 
     @GetMapping("/room")
@@ -44,7 +54,8 @@ public class RoomController {
         try {
             room = roomService.getRoom(roomId);
         } catch (RoomNotExistException e) {
-            // TODO: Validation
+            model.addAttribute("message", "Room with id " + roomId + " doesn't exist.");
+            return "error";
         }
 
         model.addAttribute("room", room);

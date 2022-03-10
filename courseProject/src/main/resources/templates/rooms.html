@@ -1,7 +1,7 @@
 <html>
 <body>
 <h1 th:text="#{label.rooms.title}">form</h1>
-<form action="/room" th:object="${newRoom}" method="POST" enctype="utf8">
+<form action="/rooms" th:object="${room}" method="POST" enctype="utf8">
     <div>
         <label th:text="#{label.room.name}">first</label>
         <input th:field="*{name}"/>

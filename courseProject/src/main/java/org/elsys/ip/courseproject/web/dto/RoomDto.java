@@ -2,6 +2,7 @@ package org.elsys.ip.courseproject.web.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class RoomDto {
@@ -9,6 +10,7 @@ public class RoomDto {
 
     @NotNull
     @NotEmpty
+    @Size(min=5, message = "{label.rooms.name.minSize.validation}")
     private String name;
 
     public String getId() {

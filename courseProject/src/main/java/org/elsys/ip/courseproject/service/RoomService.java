@@ -1,5 +1,6 @@
 package org.elsys.ip.courseproject.service;
 
+import org.elsys.ip.courseproject.error.RoomAlreadyExistException;
 import org.elsys.ip.courseproject.error.RoomNotExistException;
 import org.elsys.ip.courseproject.model.Room;
 import org.elsys.ip.courseproject.model.RoomRepository;
@@ -27,13 +28,15 @@ public class RoomService {
     @Autowired
     private UserRepository userRepository;
 
-    public RoomDto createRoom(RoomDto roomDto) {
+    public RoomDto createRoom(RoomDto roomDto) throws RoomAlreadyExistException {
+        if (roomRepository.findByName(roomDto.getName()).isPresent()) {
+            throw new RoomAlreadyExistException("Room with name " + roomDto.getName() + " already exists.");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
 
         User admin = userRepository.findByEmail(currentUserEmail);
-
-        //TODO: Check if name is unique
 
         Room room = new Room();
         room.setName(roomDto.getName());
@@ -47,7 +50,12 @@ public class RoomService {
     }
 
     public RoomDto getRoom(String roomId) throws RoomNotExistException {
-        Optional<Room> room = roomRepository.findById(UUID.fromString(roomId));
+        Optional<Room> room = Optional.empty();
+        try {
+            room = roomRepository.findById(UUID.fromString(roomId));
+        } catch (Exception ex) {
+            //Do nothing
+        }
         if (room.isEmpty()) {
             throw new RoomNotExistException("Room with id " + roomId + " doesn't exist.");
         }
