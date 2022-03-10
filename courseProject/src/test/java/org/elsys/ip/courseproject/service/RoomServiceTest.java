@@ -1,10 +1,9 @@
 package org.elsys.ip.courseproject.service;
 
+import org.assertj.core.util.Arrays;
+import org.elsys.ip.courseproject.error.RoomAlreadyExistException;
 import org.elsys.ip.courseproject.error.RoomNotExistException;
 import org.elsys.ip.courseproject.error.UserAlreadyExistException;
-import org.elsys.ip.courseproject.model.Answer;
-import org.elsys.ip.courseproject.model.Question;
-import org.elsys.ip.courseproject.model.QuestionRepository;
 import org.elsys.ip.courseproject.web.dto.RoomDto;
 import org.elsys.ip.courseproject.web.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +12,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +20,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -40,12 +34,24 @@ public class RoomServiceTest {
     @Autowired
     private UserService userService;
 
+    private UserDto myself;
+    private UserDto secondUser;
+
+    private Authentication authenticationMock;
+
     @Test
     public void createRoom() throws Exception {
         RoomDto newRoom = roomService.createRoom("New room");
 
         assertThat(newRoom.getId()).isNotEmpty();
         assertThat(newRoom.getName()).isEqualTo("New room");
+    }
+
+    @Test
+    public void createRoomExistingName() throws Exception {
+        roomService.createRoom("New room");
+        assertThatThrownBy(() -> roomService.createRoom("New room"))
+                .isInstanceOf(RoomAlreadyExistException.class);
     }
 
     @Test
@@ -77,24 +83,77 @@ public class RoomServiceTest {
     public void getInvalidRoom() throws Exception {
         assertThatThrownBy(() -> roomService.getRoom(UUID.randomUUID().toString()))
                 .isInstanceOf(RoomNotExistException.class);
+
+        assertThatThrownBy(() -> roomService.getRoom("InvalidId"))
+                .isInstanceOf(RoomNotExistException.class);
     }
 
-    //TODO: Test unique name
-    //TODO: Test invalid room id
+    @Test
+    public void joinMyselfRoom() throws RoomAlreadyExistException, RoomNotExistException {
+        RoomDto room = roomService.createRoom("New room");
+
+        assertThat(room.getParticipants()).hasSize(1);
+        assertThat(room.getParticipants().get(0)).isEqualTo(myself);
+
+        RoomDto updatedRoom = roomService.addMyselfAsParticipant(room.getId());
+
+        assertThat(updatedRoom.getParticipants()).hasSize(1);
+        assertThat(updatedRoom.getParticipants().get(0)).isEqualTo(myself);
+
+        RoomDto roomById = roomService.getRoom(room.getId());
+        assertThat(roomById.getParticipants()).isEqualTo(updatedRoom.getParticipants());
+    }
+
+    @Test
+    public void leaveJoinRoom() throws RoomAlreadyExistException, RoomNotExistException {
+        RoomDto room = roomService.createRoom("New room");
+        RoomDto updatedRoom = roomService.removeMyselfAsParticipant(room.getId());
+        assertThat(updatedRoom.getParticipants()).hasSize(0);
+
+        RoomDto roomById = roomService.getRoom(room.getId());
+        assertThat(roomById.getParticipants()).isEqualTo(updatedRoom.getParticipants());
+
+        RoomDto updatedRoom2 = roomService.addMyselfAsParticipant(room.getId());
+        assertThat(updatedRoom2.getParticipants()).hasSize(1);
+        assertThat(updatedRoom2.getParticipants().get(0)).isEqualTo(myself);
+    }
+
+    @Test
+    public void joinAnotherUser() throws RoomAlreadyExistException, RoomNotExistException {
+        RoomDto room = roomService.createRoom("New room");
+
+        //Login as another user
+        Mockito.when(authenticationMock.getName()).thenReturn("second@admin.com");
+        RoomDto updatedRoom = roomService.addMyselfAsParticipant(room.getId());
+        assertThat(updatedRoom.getParticipants()).hasSize(2);
+        assertThat(updatedRoom.getParticipants().containsAll(List.of(myself, secondUser))).isTrue();
+
+        Mockito.when(authenticationMock.getName()).thenReturn("admin@admin.com");
+        RoomDto updatedRoom2 = roomService.removeMyselfAsParticipant(room.getId());
+        assertThat(updatedRoom2.getParticipants()).hasSize(1);
+        assertThat(updatedRoom2.getParticipants().get(0)).isEqualTo(secondUser);
+    }
 
     @BeforeEach
     public void setUp() throws UserAlreadyExistException {
-        UserDto userDto = new UserDto();
-        userDto.setFirstName("Admin");
-        userDto.setLastName("Admin");
-        userDto.setEmail("admin@admin.com");
-        userDto.setPassword("password");
-        userService.registerNewUserAccount(userDto);
+        myself = new UserDto();
+        myself.setFirstName("Admin");
+        myself.setLastName("Admin");
+        myself.setEmail("admin@admin.com");
+        myself.setPassword("password");
+        userService.registerNewUserAccount(myself);
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-        Mockito.when(authentication.getName()).thenReturn("admin@admin.com");
+        secondUser = new UserDto();
+        secondUser.setFirstName("Second");
+        secondUser.setLastName("User");
+        secondUser.setEmail("second@admin.com");
+        secondUser.setPassword("password");
+        userService.registerNewUserAccount(secondUser);
+
+        authenticationMock = Mockito.mock(Authentication.class);
+        Mockito.when(authenticationMock.getName()).thenReturn("admin@admin.com");
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authenticationMock);
         SecurityContextHolder.setContext(securityContext);
     }
 }
