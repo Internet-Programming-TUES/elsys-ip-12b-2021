@@ -42,19 +42,15 @@ public class RoomServiceTest {
 
     @Test
     public void createRoom() throws Exception {
-        RoomDto dto = new RoomDto();
-        dto.setName("New room");
-        RoomDto newRoom = roomService.createRoom(dto);
+        RoomDto newRoom = roomService.createRoom("New room");
 
-        assertThat(dto.getId()).isNotEmpty();
-        assertThat(newRoom).isSameAs(dto);
+        assertThat(newRoom.getId()).isNotEmpty();
+        assertThat(newRoom.getName()).isEqualTo("New room");
     }
 
     @Test
     public void getRoomById() throws Exception {
-        RoomDto dto = new RoomDto();
-        dto.setName("New room");
-        RoomDto room = roomService.createRoom(dto);
+        RoomDto room = roomService.createRoom("New room");
 
         RoomDto roomById = roomService.getRoom(room.getId());
 
@@ -65,16 +61,12 @@ public class RoomServiceTest {
     public void getAllRooms() throws Exception {
         assertThat(roomService.getAllRooms()).hasSize(0);
 
-        RoomDto dto1 = new RoomDto();
-        dto1.setName("New room");
-        RoomDto room1 = roomService.createRoom(dto1);
+        RoomDto room1 = roomService.createRoom("New room");
 
         assertThat(roomService.getAllRooms()).hasSize(1);
         assertThat(roomService.getAllRooms().get(0)).isEqualTo(room1);
 
-        RoomDto dto2 = new RoomDto();
-        dto2.setName("New room");
-        RoomDto room2 = roomService.createRoom(dto2);
+        RoomDto room2 = roomService.createRoom("New room 2");
 
         assertThat(roomService.getAllRooms()).hasSize(2);
         assertThat(new HashSet<>(roomService.getAllRooms())
@@ -86,6 +78,9 @@ public class RoomServiceTest {
         assertThatThrownBy(() -> roomService.getRoom(UUID.randomUUID().toString()))
                 .isInstanceOf(RoomNotExistException.class);
     }
+
+    //TODO: Test unique name
+    //TODO: Test invalid room id
 
     @BeforeEach
     public void setUp() throws UserAlreadyExistException {

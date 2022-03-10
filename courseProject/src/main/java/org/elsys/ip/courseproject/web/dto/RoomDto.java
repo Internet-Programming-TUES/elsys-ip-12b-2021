@@ -3,6 +3,7 @@ package org.elsys.ip.courseproject.web.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Objects;
 
 public class RoomDto {
@@ -27,6 +28,16 @@ public class RoomDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    private List<UserDto> participants;
+
+    public List<UserDto> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<UserDto> participants) {
+        this.participants = participants;
     }
 
     @Override

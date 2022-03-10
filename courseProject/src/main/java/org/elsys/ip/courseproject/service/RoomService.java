@@ -7,6 +7,7 @@ import org.elsys.ip.courseproject.model.RoomRepository;
 import org.elsys.ip.courseproject.model.User;
 import org.elsys.ip.courseproject.model.UserRepository;
 import org.elsys.ip.courseproject.web.dto.RoomDto;
+import org.elsys.ip.courseproject.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +29,9 @@ public class RoomService {
     @Autowired
     private UserRepository userRepository;
 
-    public RoomDto createRoom(RoomDto roomDto) throws RoomAlreadyExistException {
-        if (roomRepository.findByName(roomDto.getName()).isPresent()) {
-            throw new RoomAlreadyExistException("Room with name " + roomDto.getName() + " already exists.");
+    public RoomDto createRoom(String name) throws RoomAlreadyExistException {
+        if (roomRepository.findByName(name).isPresent()) {
+            throw new RoomAlreadyExistException("Room with name " + name + " already exists.");
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -39,14 +40,13 @@ public class RoomService {
         User admin = userRepository.findByEmail(currentUserEmail);
 
         Room room = new Room();
-        room.setName(roomDto.getName());
+        room.setName(name);
         room.setAdmin(admin);
+        room.getParticipants().add(admin);
 
         roomRepository.save(room);
 
-        roomDto.setId(room.getId().toString());
-
-        return roomDto;
+        return convert(room);
     }
 
     public RoomDto getRoom(String roomId) throws RoomNotExistException {
@@ -60,11 +60,7 @@ public class RoomService {
             throw new RoomNotExistException("Room with id " + roomId + " doesn't exist.");
         }
 
-        RoomDto roomDto = new RoomDto();
-        roomDto.setId(roomId);
-        roomDto.setName(room.get().getName());
-
-        return roomDto;
+        return convert(room.get());
     }
 
     public List<RoomDto> getAllRooms() {
@@ -76,6 +72,15 @@ public class RoomService {
         RoomDto dto = new RoomDto();
         dto.setId(room.getId().toString());
         dto.setName(room.getName());
+        dto.setParticipants(room.getParticipants().stream().map(x -> convert(x)).collect(Collectors.toList()));
+        return dto;
+    }
+
+    private UserDto convert(User user) {
+        UserDto dto = new UserDto();
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
         return dto;
     }
 }

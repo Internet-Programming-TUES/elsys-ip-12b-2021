@@ -39,7 +39,7 @@ public class RoomController {
         }
 
         try {
-            RoomDto room = roomService.createRoom(roomDto);
+            RoomDto room = roomService.createRoom(roomDto.getName());
             return "redirect:/room?id=" + room.getId();
         } catch (RoomAlreadyExistException uaeEx) {
             bindingResult.rejectValue("name", "room", "Room with name " + roomDto.getName() + " already exists.");

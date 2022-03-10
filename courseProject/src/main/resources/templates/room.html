@@ -4,5 +4,7 @@
 <p th:text="${room.name}" />
 <p th:text="${room.id}" />
 
+<p th:text="#{label.room.participants}" />
+<p th:each="user : ${room.participants}" th:text="${user.email}" />
 </body>
 </html>
