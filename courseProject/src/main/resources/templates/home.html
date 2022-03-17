@@ -1,4 +1,4 @@
-<html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 
 <div sec:authorize="isAuthenticated()" th:replace="fragments/menu :: menu" />
@@ -7,8 +7,8 @@
 <h1 th:text="#{label.home.title}">form</h1>
 
 <div sec:authorize="isAnonymous()">
-<a th:href="@{/user/registration}" th:text="#{label.home.register}">register</a>
-<a th:href="@{/login}" th:text="#{label.home.login}">login</a>
+<a id="regBtn" th:href="@{/user/registration}" th:text="#{label.home.register}">register</a>
+<a id="logBtn" th:href="@{/login}" th:text="#{label.home.login}">login</a>
 </div>
 </body>
 </html>
