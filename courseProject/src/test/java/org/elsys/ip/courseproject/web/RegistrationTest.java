@@ -36,8 +36,14 @@ public class RegistrationTest {
     @Test
     public void registration() {
         webDriver.get("http://localhost:" + port);
-        delay();
         webDriver.findElement(By.id("regBtn")).click();
+        delay();
+        webDriver.findElement(By.id("firstName")).sendKeys("First Name");
+        webDriver.findElement(By.id("lastName")).sendKeys("Last Name");
+        webDriver.findElement(By.id("email")).sendKeys("email@email.com");
+        webDriver.findElement(By.id("password")).sendKeys("qwerty");
+        webDriver.findElement(By.id("matchingPassword")).sendKeys("qwerty");
+        webDriver.findElement(By.tagName("button")).click();
         delay();
     }
 }
