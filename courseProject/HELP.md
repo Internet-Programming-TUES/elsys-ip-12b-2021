@@ -21,4 +21,5 @@ https://www.baeldung.com/spring-boot-h2-database
 https://spring.io/guides/gs/testing-web/
 https://www.baeldung.com/registration-with-spring-mvc-and-spring-security
 https://springframework.guru/using-the-h2-database-console-in-spring-boot-with-spring-security/
+https://www.baeldung.com/java-selenium-with-junit-and-testng
 
