@@ -78,4 +78,10 @@ public class RoomController {
         return "redirect:/room?id=" + roomId;
     }
 
+    @PostMapping("/room/start")
+    public String startGame(Model model, @RequestParam("id") String roomId) {
+        //TODO: Enter game mode
+        return "redirect:/room?id=" + roomId;
+    }
+
 }

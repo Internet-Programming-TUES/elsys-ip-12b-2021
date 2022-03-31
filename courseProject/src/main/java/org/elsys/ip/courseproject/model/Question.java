@@ -1,5 +1,6 @@
 package org.elsys.ip.courseproject.model;
 
+import net.bytebuddy.matcher.EqualityMatcher;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -20,7 +21,7 @@ public class Question {
     private String text;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="question")
+    @JoinColumn(name = "question")
     private List<Answer> answers;
 
     public UUID getId() {
@@ -54,5 +55,14 @@ public class Question {
                 ", text='" + text + '\'' +
                 ", answers=" + answers +
                 '}';
+    }
+
+    public static Question question(
+            String text,
+            Answer... answers) {
+        Question question = new Question();
+        question.setText(text);
+        question.setAnswers(List.of(answers));
+        return question;
     }
 }

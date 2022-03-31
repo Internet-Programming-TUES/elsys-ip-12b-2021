@@ -30,6 +30,8 @@ public class RoomDto {
         this.name = name;
     }
 
+    private UserDto owner;
+
     private List<UserDto> participants;
 
     public List<UserDto> getParticipants() {
@@ -48,6 +50,24 @@ public class RoomDto {
 
     public void setCurrentUserParticipant(boolean currentUserParticipant) {
         isCurrentUserParticipant = currentUserParticipant;
+    }
+
+    private boolean isCurrentUserOwner;
+
+    public boolean isCurrentUserOwner() {
+        return isCurrentUserOwner;
+    }
+
+    public void setCurrentUserOwner(boolean currentUserOwner) {
+        isCurrentUserOwner = currentUserOwner;
+    }
+
+    public UserDto getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserDto owner) {
+        this.owner = owner;
     }
 
     @Override

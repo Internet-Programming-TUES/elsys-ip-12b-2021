@@ -1,10 +1,16 @@
 <html>
+<head>
+    <meta http-equiv="refresh" content="5">
+</head>
 <body>
 <div th:replace="fragments/menu :: menu"></div>
 
 <h1 th:text="#{label.room.title}">form</h1>
 <p th:text="${room.name}" />
 <p th:text="${room.id}" />
+
+<p th:text="#{label.room.owner}" />
+<p th:text="${room.owner.email}" />
 
 <p th:text="#{label.room.participants}" />
 <p th:each="user : ${room.participants}" th:text="${user.email}" />
@@ -20,5 +26,12 @@
     <input type="hidden" th:value="${room.id}" name="id">
     <button type="submit">leave</button>
 </form>
+
+<form th:if="${room.isCurrentUserOwner}" action="/room/start" th:object="${room}" method="POST" enctype="utf8">
+    <input type="hidden" th:value="${room.id}" name="id">
+    <button type="submit">!!!START!!!</button>
+</form>
+
+</body>
 <!--</body>-->
 </html>

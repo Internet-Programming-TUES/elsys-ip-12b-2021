@@ -73,8 +73,10 @@ public class RoomService {
         RoomDto dto = new RoomDto();
         dto.setId(room.getId().toString());
         dto.setName(room.getName());
+        dto.setOwner(convert(room.getAdmin()));
         dto.setParticipants(room.getParticipants().stream().map(x -> convert(x)).collect(Collectors.toList()));
         dto.setCurrentUserParticipant(room.getParticipants().contains(myself()));
+        dto.setCurrentUserOwner(room.getAdmin().equals(myself()));
         return dto;
     }
 
