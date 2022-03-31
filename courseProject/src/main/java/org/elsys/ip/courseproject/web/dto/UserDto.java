@@ -24,6 +24,8 @@ public class UserDto {
     @ValidEmail
     private String email;
 
+    private int score;
+
     public String getFirstName() {
         return firstName;
     }
@@ -62,6 +64,14 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.elsys.ip.courseproject.web.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +69,16 @@ public class RoomDto {
 
     public void setOwner(UserDto owner) {
         this.owner = owner;
+    }
+
+    private LocalDateTime startedTime;
+
+    public LocalDateTime getStartedTime() {
+        return startedTime;
+    }
+
+    public void setStartedTime(LocalDateTime startedTime) {
+        this.startedTime = startedTime;
     }
 
     @Override

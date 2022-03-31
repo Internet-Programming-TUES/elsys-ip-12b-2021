@@ -26,9 +26,10 @@ public class CourseProjectApplication {
 
     @PostConstruct
     void addQuestions() {
-        repo.deleteAll();
-        repo.save(question("Колко е 2+2?", wrong("1"), wrong("2"), wrong("3"), correct("4")));
-        repo.save(question("Кой е най-якият клас?", wrong("12а"), correct("12б"), wrong("12в"), wrong("12г")));
-        repo.save(question("Ще завърша ли по ИП?", correct("да"), wrong("не")));
+        if (!repo.findAll().iterator().hasNext()) {
+            repo.save(question("Колко е 2+2?", wrong("1"), wrong("2"), wrong("3"), correct("4")));
+            repo.save(question("Кой е най-якият клас?", wrong("12а"), correct("12б"), wrong("12в"), wrong("12г")));
+            repo.save(question("Ще завърша ли по ИП?", correct("да"), wrong("не")));
+        }
     }
 }
